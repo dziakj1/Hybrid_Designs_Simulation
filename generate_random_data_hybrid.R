@@ -13,6 +13,8 @@ generate_random_data_hybrid <- function( n_sub,
                                          delta = -.08,
                                          sigma_sqd = .2,
                                          rho = .5) {
+  library(dplyr);
+  library(tidyr);
   data_wide <- data.frame(id=1:n_sub,
                           replicant=NA,
                           known_weight=NA,

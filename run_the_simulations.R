@@ -1,13 +1,8 @@
-rm(list = ls());
-library(dplyr);
-library(tidyr);
-library(geepack);
 set.seed(16802);
 source("generate_random_data_hybrid.R");
 source("analyze_data_hybrid.R");
 source("simulate_power_hybrid.R");
-n_sim <- 2000;
-scenario <- 0;
+n_sim <- 2500;
 overall_start_time <- Sys.time();
 proximal_T1E <- NULL;
 distal_T1E <- NULL;
@@ -15,7 +10,6 @@ proximal_power <- NULL;
 distal_power <- NULL;
 for (n_sub in c(100,150,200)) {
   for (p_responder in c(.6,.5,.4)) {
-    scenario <- scenario + 1;
     print("Simulating Type One error when all effects are null");
     simulation_results <- simulate_power_hybrid(n_sim=n_sim,
                                                 p_responder=p_responder,

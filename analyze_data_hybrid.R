@@ -2,6 +2,9 @@ analyze_data_hybrid <- function(data_wide,
                                 n_obs,
                                 K,
                                 print_results=TRUE) {
+  library(dplyr);
+  library(tidyr);
+  library(geepack);
   # Weight and replicate;
   rows_to_replicate <- data_wide %>% filter(R==1);
   rows_to_replicate$known_weight <- 2;

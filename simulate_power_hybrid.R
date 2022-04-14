@@ -16,6 +16,8 @@ simulate_power_hybrid <- function(n_sim,
                                   rho = .5,
                                   make_all_effects_null = FALSE,
                                   print_results = TRUE) {
+  library(dplyr);
+  library(tidyr);
   start_time <- Sys.time();
   if (make_all_effects_null) {
     # A shortcut for doing Type One error simulations, 
