@@ -1,18 +1,25 @@
-generate_random_data_hybrid <- function( n_sub,
+generate_random_data_hybrid <- function( n_sim,  # number of datasets to simulate;
+                                         n_sub,  # number of subjects per simulated dataset;
                                          n_obs = 112, # number of observation occasions;
                                          K = 28, # re-randomization occasion;
-                                         p_responder = .5,
-                                         b0 = .25,
-                                         b1 = -.03,
-                                         b2 = -.03,
-                                         b3 = -.03,
-                                         gamma0 = -.02,
-                                         gamma1 = -.02,
-                                         gamma2 = -.02, 
-                                         gamma3 = -.02, 
-                                         delta = -.08,
-                                         sigma_sqd = .2,
-                                         rho = .5) {
+                                         p_responder = .5,  # proportion of responders;
+                                         # in this version we assume that it is the
+                                         # same regardless of treatment arms;
+                                         # The parameter values below are set by default to those used in the paper:;
+                                         b0 = .25, # coefficient representing an intercept constant;
+                                         b1 = -.03,  # coefficient representing half the main effect of stage-1 treatment Z1;
+                                         b2 = -.03,  # coefficient representing half the effect of stage-2 treatment Z2 on nonresponders;
+                                         b3 = -.03,  # coefficient representing the interaction between stage-1 and stage-2 treatment;
+                                         gamma0 = -.02, # coefficient representing half the proximal main effect of intensively randomized treatment A;
+                                         gamma1 = -.02, # coefficient representing interaction between A and Z1;
+                                         gamma2 = -.02, # coefficient representing interaction between A and Z2;
+                                         gamma3 = -.02, # coefficient representing interaction between A, Z1 and Z2;
+                                         delta = -.08, # non-causal effect on proximal outcome associated with being a responder;
+                                         sigma_sqd = .2, # error variance of proximal oucome;
+                                         rho = .5) # autocorrelation between consecutive error terms in proximal outcomes;
+ # Generate a simulated dataset representing a possible hybrid SMART-MRT study 
+ # with hypothesized true parameters;
+ { 
   library(dplyr);
   library(tidyr);
   data_wide <- data.frame(id=1:n_sub,
