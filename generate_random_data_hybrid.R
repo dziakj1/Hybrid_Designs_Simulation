@@ -1,7 +1,7 @@
 generate_random_data_hybrid <- function( n_sim,  # number of datasets to simulate;
-                                         n_sub,  # number of subjects per simulated dataset;
-                                         n_obs = 112, # number of observation occasions;
-                                         K = 28, # re-randomization occasion;
+                                         n_sub,  # number of simulated participants (subjects) to be generated per simulated dataset;
+                                         n_obs = 112, # number of observation occasions (e.g., days);
+                                         K = 28, # re-randomization occasion (e.g., day when second randomization is done) for second-phase SMART component;
                                          p_responder = .5,  # proportion of responders;
                                          # in this version we assume that it is the
                                          # same regardless of treatment arms;
@@ -28,25 +28,42 @@ generate_random_data_hybrid <- function( n_sim,  # number of datasets to simulat
                           Z1=sample(c(1,-1),
                                     n_sub,
                                     replace=TRUE));
-  n_obs_stage1 <- K-1;
+     # set up a data frame to represent the simulated study, starting
+     # with subject ID and a random assignment for each subject on 
+     # the initial-phase SMART factor, Z1.
+  n_obs_stage1 <- K-1;  # count the number of days in stage 1, i.e., 
+     # the number of days before re-randomization;
   A_stage1_wide <- matrix(sample(c(1,-1),
                                  n_sub*n_obs_stage1,
                                  replace=TRUE),n_sub,n_obs_stage1);
+        # Generate a matrix of random assignments to the intensively
+        # randomized factor A, one for each subject and each day in
+        # stage 1.  For now only generate these for the days in the 
+        # first stage.;
   Z1_stage1_wide <- data_wide$Z1 %o% rep(1,n_obs_stage1);
+        # Create a matrix of the same size as A_stage1_wide, but
+        # with only that participant's value of Z1 repeated over and over.;
   mu_prox_stage1 <- b0 + b1*Z1_stage1_wide + gamma0*A_stage1_wide;
+        # Create a matrix of fitted mean values for the responses at 
+        # each stage, assuming an additive linear regression model.;
   resids_stage1 <- matrix(NA,
                           nrow(mu_prox_stage1),
                           ncol(mu_prox_stage1));
+        # Creates a matrix to hold residuals for each stage.;
   resids_stage1[,1] <- rnorm(n_sub,
                              mean=0,
                              sd=sqrt(sigma_sqd));
+      # Randomly generates residuals for the first days' observations.;
   for (j in 2:ncol(mu_prox_stage1)) {
     resids_stage1[,j] <- rho*resids_stage1[,j-1] +
       sqrt(1-rho^2)*rnorm(n_sub,
                           mean=0,
                           sd=sqrt(sigma_sqd));
-  }
+  } # Generates residual errors for each day afterwards in turn, 
+  # correlated with the previous residual following an AR-1
+  # structure.;
   Y_prox_stage1 <- mu_prox_stage1 + resids_stage1;
+    # The simulated outcome Y is its expected value mu plus the residual;
   # Generate response status;
   data_wide$R <- NA;
   data_wide$R[which(data_wide$Z1==+1)] <- rbinom(sum(data_wide$Z1==+1),
@@ -55,7 +72,13 @@ generate_random_data_hybrid <- function( n_sim,  # number of datasets to simulat
   data_wide$R[which(data_wide$Z1==-1)] <- rbinom(sum(data_wide$Z1==-1),
                                                  1,
                                                  p_responder);
-  # Generate data for Stage 2;
+    # In this simple example, the proportion of responders is considered
+    # to be about the same under either level of Z1, but the code could
+    # easily be changed for a more general model by using two different
+    # binomial probabilities instead of the one p_responder value.
+  # Generate data for Stage 2.  This is done much as in Stage 1, but with 
+  # additional effects and interactions because the Stage 2 treatment is now
+  # active for nonresponders.;
   n_obs_stage2 <- n_obs-K+1;
   A_stage2_wide <- matrix(sample(c(1,-1),
                                  n_sub*n_obs_stage2,
