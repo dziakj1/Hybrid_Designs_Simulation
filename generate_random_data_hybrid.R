@@ -85,10 +85,12 @@ generate_random_data_hybrid <- function( n_sim,  # number of datasets to simulat
                                  replace=TRUE),
                           n_sub,
                           n_obs_stage2);
-  data_wide$Z2 <- 0;
+  data_wide$Z2 <- 0; # The stage-2 factor Z2 is set by convention to 0 for
+    # responders.
   nonresponders_id <- which(data_wide$R==0);
   data_wide$Z2[nonresponders_id] <- sample(c(1,-1),
                                            length(nonresponders_id),replace=TRUE);
+     # Z2 is randomly set to +1 or -1 for nonresponders.
   Z1_stage2_wide <- data_wide$Z1 %o% rep(1,n_obs_stage2);
   Z2_stage2_wide <- data_wide$Z2 %o% rep(1,n_obs_stage2);
   mu_prox_stage2 <- b0 + b1*Z1_stage2_wide + b2*Z2_stage2_wide+ 
@@ -98,6 +100,8 @@ generate_random_data_hybrid <- function( n_sim,  # number of datasets to simulat
     gamma2*A_stage2_wide*Z2_stage2_wide +
     gamma3*A_stage2_wide*Z1_stage2_wide*Z2_stage2_wide +
     delta*(data_wide$R-(p_responder-1))  ;
+    # This is the expected value of the short-term outcome conditional on 
+    # Z1, Z2, R and A, during the second stage.;
   resids_stage2 <- matrix(NA,
                           nrow(mu_prox_stage2),
                           ncol(mu_prox_stage2));
@@ -109,7 +113,7 @@ generate_random_data_hybrid <- function( n_sim,  # number of datasets to simulat
       sqrt(1-rho^2)*rnorm(n_sub,
                           mean=0,
                           sd=sqrt(sigma_sqd));
-  }
+  } # As before, the above trick generates autocorrelated residuals.;
   Y_prox_stage2 <- mu_prox_stage2 + resids_stage2;
   # Assemble wide dataset;
   A_matrix <- data.frame(id=data_wide$id,
@@ -120,6 +124,9 @@ generate_random_data_hybrid <- function( n_sim,  # number of datasets to simulat
                          Y=cbind(Y_prox_stage1, 
                                  Y_prox_stage2));
   colnames(Y_matrix) <- c("id",paste("Y",1:n_obs,sep=""));
+  # Now join all the relevant variables into a dataset, in wide
+  # format (one row per participant, with observation days in
+  # different columns), and return it. 
   data_wide <- left_join(data_wide, 
                          A_matrix, 
                          by="id");
