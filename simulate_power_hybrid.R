@@ -73,7 +73,9 @@ simulate_power_hybrid <- function(n_sim,  # number of datasets to simulate;
   finish_time <- Sys.time();
   time_taken <- difftime(finish_time,start_time);
   # The code below is to print the simulated power in table form.
-  # 
+  # The rows are rearranged from the R default for listing model
+  # terms, in order to put the SMART terms first and the MRT terms
+  # afterwards.;
   row_order_proximal <- c("Z1",
                           "Z2stage2",
                           "Z1:Z2stage2",
