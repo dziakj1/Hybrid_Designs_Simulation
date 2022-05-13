@@ -1,4 +1,4 @@
-set.seed(16802); # set arbitrary seed for generating random data;
+set.seed(168010000); # set arbitrary seed for generating random data;
 source("generate_random_data_hybrid.R");
 source("analyze_data_hybrid.R");
 source("simulate_power_hybrid.R");
