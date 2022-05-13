@@ -2,7 +2,7 @@ set.seed(168010000); # set arbitrary seed for generating random data;
 source("generate_random_data_hybrid.R");
 source("analyze_data_hybrid.R");
 source("simulate_power_hybrid.R");
-n_sim <- 2000; # do 2000 simulations;
+n_sim <- 2500; # do 2500 simulations;
 overall_start_time <- Sys.time(); # record starting time 
                                   #  just to see how long
                                   #  the scenario takes.;
