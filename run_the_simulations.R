@@ -1,8 +1,8 @@
-set.seed(168010000); # set arbitrary seed for generating random data;
+set.seed(16802); # set arbitrary seed for generating random data;
 source("generate_random_data_hybrid.R");
 source("analyze_data_hybrid.R");
 source("simulate_power_hybrid.R");
-n_sim <- 2500; # do 2500 simulations;
+n_sim <- 2000; # do 2000 simulations;
 overall_start_time <- Sys.time(); # record starting time 
                                   #  just to see how long
                                   #  the scenario takes.;
@@ -36,15 +36,10 @@ for (n_sub in c(100,150,200)) {
                           c(n_sub=n_sub,
                             p_responder=p_responder,
                             simulation_results$power_proximal));
-    # Type 1 error is calculated the same as power (proportion of 
-    # datasets in which the null hypothesis is rejected) but under
-    # a scenario with population true effect size zero.;
     distal_T1E <- rbind(distal_T1E,
                         c(n_sub=n_sub,
                           p_responder=p_responder,
                           simulation_results$power_distal));
-        # records the distal Type I error rate; 
-    # Now simulate power with the nonzero default parameter values.;
     print("Simulating power when all effects are non-null");
     simulation_results <- simulate_power_hybrid(n_sim=n_sim,
                                                 p_responder=p_responder,
@@ -54,19 +49,15 @@ for (n_sub in c(100,150,200)) {
                             c(n_sub=n_sub,
                               p_responder=p_responder,
                               simulation_results$power_proximal));
-        # records the proximal power results;
     distal_power <- rbind(distal_power,
                           c(n_sub=n_sub,
                             p_responder=p_responder,
                             simulation_results$power_distal));
-        # records the distal power results;
     save.image("okay_so_far.rdata");
   }
 }
-# Save answers:;
 overall_finish_time <- Sys.time();
 save.image("did-simulations.rdata");
-# Print results:;
 print(round(proximal_T1E,4));
 print(round(distal_T1E,4));
 print(round(proximal_power,4));
