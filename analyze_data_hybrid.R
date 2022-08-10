@@ -53,12 +53,14 @@ analyze_data_hybrid <- function(data_wide, # the dataset in wide format;
     pivot_longer(cols=starts_with("A"),
                  names_prefix = "A",
                  names_to = "time", 
+                 names_transform = list(time = as.integer),
                  values_to = "A");
   data_long_w_r_Y <- data_wide_w_r %>% 
     select("id","replicant",starts_with("Y")) %>%
     pivot_longer(cols=starts_with("Y"),
                  names_prefix = "Y",
                  names_to = "time", 
+                 names_transform = list(time = as.integer),
                  values_to = "Y");
   data_long_w_r_other <- data_wide_w_r %>% select("id", 
                                                   "replicant",
